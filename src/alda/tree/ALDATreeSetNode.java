@@ -3,8 +3,6 @@ package alda.tree;
 public class ALDATreeSetNode<E extends Comparable<E>> {
     private E data;
     private int size  = 1;
-    private int rightDepth;
-    private int leftDepth;
     private ALDATreeSetNode<E> predecessor, successor, left, right;
 
 
@@ -71,7 +69,18 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         }
     }
 
-    public boolean contains(E data) {
+
+    private void balanceRight(){
+
+    }
+
+    private void balanceLeft(){
+        if (right.depth() > left.depth()){
+            ALDATreeSetNode<E> temp = right;
+        }
+    }
+
+    protected boolean contains(E data) {
         int compareInt = data.compareTo(this.data);
         if (compareInt == 0){
             return true;
@@ -96,7 +105,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         }
     }
 
-    public int depth() {
+    private int depth() {
 
         if(left == null && right == null){
             return 0;
