@@ -1,8 +1,11 @@
 package alda.tree;
 
 public class ALDATreeSetNode<E extends Comparable<E>> {
+    private static final int MAXIMUM_INBALANCE = 1;
     private E data;
     private int size  = 1;
+    private int height;
+
     private ALDATreeSetNode<E> predecessor, successor, left, right;
 
 
@@ -24,31 +27,27 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         return size;
     }
 
-    public int add(E data) {
+    public ALDATreeSetNode<E> add(E data) {
         int lessOrGreaterInt = data.compareTo(this.data);
 
         if (lessOrGreaterInt < 0) {
             if (left == null) {
                 left = new ALDATreeSetNode<E>(data);
-                return ++size;
             } else {
-                int leftSize = left.size;
-                return size += left.add(data) - leftSize;
+                left = left.add(data);
             }
         }
 
         else if(lessOrGreaterInt > 0) {
             if (right == null) {
                 right = new ALDATreeSetNode<E>(data);
-                return ++size;
             }
             else{
-                int rightSize = right.size;
-                return size += right.add(data) - right.size;
+                right = right.add(data);
             }
         }
 
-        return size;
+        return this;
     }
 
     private E findMax(){

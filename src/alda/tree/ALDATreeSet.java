@@ -3,6 +3,10 @@ package alda.tree;
 import java.util.AbstractSet;
 import java.util.Iterator;
 
+/**
+ *
+ * @param <E> The type of the element in the TreeSet
+ */
 
 public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> implements Iterable<E> {
     private ALDATreeSetNode<E> root;
@@ -13,6 +17,12 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
         return new ALDATreeSetIterator<E>(root);
     }
 
+    /**
+     *
+     * @param data The element to be added to the TreeSet
+     * @return True if the element has been added, false if it already has been added to TreeSet
+     */
+
     public boolean add(E data) {
         if (root == null) {
             root = new ALDATreeSetNode<E>(data);
@@ -20,11 +30,16 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
             return true;
 
         } else {
-            int previousSize = size;
-            size = root.add(data);
-            return size > previousSize;
+            root = root.add(data);
+            return true;
         }
     }
+
+    /**
+     *
+     * @param data The element to be added to the TreeSet
+     * @return True if the Set contains the element, false otherwise
+     */
 
     public boolean contains(E data){
         if(root != null){
@@ -35,10 +50,20 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
         }
     }
 
+    /**
+     *
+     * @return the number of elements in the TreeSet
+     */
+
     @Override
     public int size() {
         return size;
     }
+
+    /**
+     *
+     * @return a string representation of this TreeSet
+     */
 
     @Override
     public String toString(){
@@ -67,8 +92,6 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
             return current.getData();
         }
     }
-
-
 
 
 }
