@@ -30,8 +30,10 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
             return true;
 
         } else {
+            int tempsize = root.size();
             root = root.add(data);
-            return true;
+            size = root.size();
+            return size > tempsize;
         }
     }
 

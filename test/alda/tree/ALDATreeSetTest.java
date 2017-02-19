@@ -20,7 +20,7 @@ public class ALDATreeSetTest {
 
     @Test
     public void testSize(){
-        assertEquals(tree.size(), 6);
+        assertEquals(6, tree.size());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ALDATreeSetTest {
     @Test
     public void testSizeAfterAddingExistingElement(){
         assertFalse(tree.add(5));
-        assertEquals(tree.size(), 6);
+        assertEquals(6, tree.size());
     }
 
 

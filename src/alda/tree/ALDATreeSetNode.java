@@ -1,16 +1,24 @@
 package alda.tree;
 
+import java.lang.Math;
+
 public class ALDATreeSetNode<E extends Comparable<E>> {
     private static final int MAXIMUM_INBALANCE = 1;
     private E data;
     private int size  = 1;
-    private int height;
+    private int height = 0;
 
     private ALDATreeSetNode<E> predecessor, successor, left, right;
 
 
     public ALDATreeSetNode(E data) {
         this.data = data;
+    }
+
+    public ALDATreeSetNode(E data, ALDATreeSetNode<E> predecessor, ALDATreeSetNode<E> successor) {
+        this.data = data;
+        this.predecessor = predecessor;
+        this.successor = successor;
     }
 
     //Package Private
@@ -33,21 +41,89 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         if (lessOrGreaterInt < 0) {
             if (left == null) {
                 left = new ALDATreeSetNode<E>(data);
-            } else {
+                size++;
+                height = Math.max(height(left), height(right)) + 1;
+            }
+            else {
+                int tempsize = left.size;
                 left = left.add(data);
+                if(left.size > tempsize){
+                    size++;
+                    height = Math.max(height(left), height(right)) + 1;
+                }
             }
         }
 
         else if(lessOrGreaterInt > 0) {
             if (right == null) {
                 right = new ALDATreeSetNode<E>(data);
+                size++;
+                height = Math.max(height(left), height(right)) + 1;
             }
             else{
+                int tempsize = right.size;
                 right = right.add(data);
+                if(right.size > tempsize){
+                    size++;
+                    height = Math.max(height(left), height(right)) + 1;
+                }
+
             }
         }
+        else{
+            return this;
+        }
 
+        return balance();
+    }
+
+    private ALDATreeSetNode<E> balance(){
+        if(right != null && left != null){
+            if(left.height - right.height > MAXIMUM_INBALANCE){
+                return leftImbalance();
+            }
+            else if (right.height - left.height > MAXIMUM_INBALANCE){
+                return rightImbalance();
+            }
+            else{
+                return this;
+            }
+        }
+        else if(right == null){
+            if(left.height > MAXIMUM_INBALANCE){
+                return leftImbalance();
+            }
+        }
+        else{
+            if(right.height > MAXIMUM_INBALANCE){
+                return rightImbalance();
+            }
+        }
         return this;
+    }
+
+    private ALDATreeSetNode<E> leftImbalance(){
+        if (height(left.left) > height(left.right)){
+            return rotateLeftToRight();
+        }
+        else if(height(left.right) > height(left.left)){
+            return doubleLeftToRight();
+        }
+        else{
+            throw new AssertionError();
+        }
+    }
+
+    private ALDATreeSetNode<E> rightImbalance(){
+        if (height(right.right) > height(right.left)){
+            return rotateRightToLeft();
+        }
+        else if(height(right.left) > height(right.right)){
+            return doubleRightToLeft();
+        }
+        else{
+            throw new AssertionError();
+        }
     }
 
     private E findMax(){
@@ -68,15 +144,45 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         }
     }
 
-
-    private void balanceRight(){
-
+    private ALDATreeSetNode<E> rotateRightToLeft(){
+        ALDATreeSetNode<E> root = right;
+        right = root.left;
+        root.left = this;
+        adjustHeightAndSize(this);
+        adjustHeightAndSize(root);
+        return root;
     }
 
-    private void balanceLeft(){
-        if (right.depth() > left.depth()){
-            ALDATreeSetNode<E> temp = right;
-        }
+    private ALDATreeSetNode<E> rotateLeftToRight(){
+        ALDATreeSetNode<E> root = left;
+        left = root.right;
+        root.right = this;
+        adjustHeightAndSize(this);
+        adjustHeightAndSize(root);
+        return root;
+    }
+
+    private void adjustHeightAndSize(ALDATreeSetNode<E> node){
+        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        node.size = size(node.left) + size(node.right) + 1;
+    }
+
+    private ALDATreeSetNode<E> doubleRightToLeft(){
+        right.rotateLeftToRight();
+        return rotateRightToLeft();
+    }
+
+    private ALDATreeSetNode<E> doubleLeftToRight(){
+        left.rotateRightToLeft();
+        return rotateLeftToRight();
+    }
+
+    private int size(ALDATreeSetNode<E> node){
+        return node == null ? 0 : node.size;
+    }
+
+    private int height(ALDATreeSetNode<E> node){
+        return node == null ? -1 : node.height;
     }
 
     protected boolean contains(E data) {
@@ -92,31 +198,6 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         }
         else{
             return false;
-        }
-    }
-
-    private int compareDepths(int first, int second){
-        if(first >= second){
-            return first;
-        }
-        else{
-            return second;
-        }
-    }
-
-    private int depth() {
-
-        if(left == null && right == null){
-            return 0;
-        }
-        else if(left != null && right != null){
-            return 1 + compareDepths(left.depth(), right.depth());
-        }
-        else if(left != null){
-            return 1 + left.depth();
-        }
-        else{
-            return 1 + right.depth();
         }
     }
 
