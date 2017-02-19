@@ -62,6 +62,10 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
         return size;
     }
 
+    public int height(){
+        return root == null ? 0 : root.height();
+    }
+
     /**
      *
      * @return a string representation of this TreeSet
