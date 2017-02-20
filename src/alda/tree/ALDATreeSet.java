@@ -28,16 +28,44 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
     public boolean add(E data) {
         if (root == null) {
             root = new ALDATreeSetNode<E>(data);
+            first.setSuccessor(root);
+            last.setPredecessor(root);
             ++size;
             return true;
 
         } else {
             int tempsize = root.size();
             root = root.add(data);
-            size = root.size();
-            first.setSuccessor(root.findMin());
-            last.setPredecessor(root.findMax());
-            return size > tempsize;
+            if(root.size() > tempsize){
+                size = root.size();
+                first.setSuccessor(root.findMin());
+                last.setPredecessor(root.findMax());
+                return true;
+            }
+            return false;
+        }
+    }
+
+
+    public boolean remove(E data) {
+        int tempsize  = root.size();
+        if(root != null){
+            root = root.remove(data);
+            if(root != null && root.size() < tempsize){
+                size = root.size();
+                first.setSuccessor(root.findMin());
+                last.setPredecessor(root.findMax());
+                return true;
+            }
+            else if(root == null){
+                clear();
+                return true;
+            }
+            else
+                return false;
+        }
+        else {
+            return false;
         }
     }
 
@@ -67,7 +95,7 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
     }
 
     public int height(){
-        return root == null ? 0 : root.height();
+        return root == null ? -1 : root.height();
     }
 
     /**
@@ -82,6 +110,14 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
         else{
             return "[]";
         }
+    }
+
+    @Override
+    public void clear(){
+        size = 0;
+        root = null;
+        first.setSuccessor(null);
+        last.setPredecessor(null);
     }
 
     private class ALDATreeSetIterator<E extends Comparable<E>> implements Iterator<E> {

@@ -53,6 +53,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         if (lessOrGreaterInt < 0) {
             if (left == null) {
                 left = new ALDATreeSetNode<E>(data,null,this);
+                adjustPredecessorAndSuccessor(predecessor, left);
                 predecessor = left;
                 size++;
                 height = Math.max(height(left), height(right)) + 1;
@@ -71,6 +72,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         else if(lessOrGreaterInt > 0) {
             if (right == null) {
                 right = new ALDATreeSetNode<E>(data, this, null);
+                adjustPredecessorAndSuccessor(right, successor);
                 successor = right;
                 size++;
                 height = Math.max(height(left), height(right)) + 1;
@@ -93,6 +95,66 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         return balance();
     }
 
+    protected ALDATreeSetNode<E> remove(E data){
+        int compareInt = data.compareTo(this.data);
+
+        if (compareInt < 0){
+            if(left != null){
+                int tempsize = left.size;
+                left = left.remove(data);
+                if(left == null || left.size < tempsize ){
+                    size--;
+                    height = Math.max(height(left), height(right)) + 1;
+                }
+
+            }
+            return balance();
+
+        }
+        else if(compareInt > 0){
+            if(right != null){
+                int tempsize = right.size;
+                right = right.remove(data);
+                if(right == null || right.size < tempsize ){
+                    size--;
+                    height = Math.max(height(left), height(right)) + 1;
+                }
+            }
+            return balance();
+        }
+
+        else{
+            if(left != null){
+                ALDATreeSetNode<E> newRoot = left.findMax(); //Varför fungerar inte predecessor här?
+                newRoot.left = left.remove(newRoot.data);
+                newRoot.right = right;
+                adjustHeightAndSize(newRoot);
+                return newRoot.balance();
+            }
+            else if(right != null){
+                ALDATreeSetNode<E> newRoot = right.findMin(); //och Sucessor här!
+                newRoot.right = right.remove(newRoot.data);
+                newRoot.left = left;
+                adjustHeightAndSize(newRoot);
+                return newRoot.balance();
+
+            }
+            else{
+                return null;
+            }
+
+        }
+    }
+
+    private void adjustPredecessorAndSuccessor(ALDATreeSetNode<E> predecessor, ALDATreeSetNode<E> successor){
+        if(predecessor != null) {
+            predecessor.successor = successor;
+        }
+        if(successor != null) {
+            successor.predecessor = predecessor;
+        }
+    }
+
     private ALDATreeSetNode<E> balance(){
         if(right != null && left != null){
             if(left.height - right.height > MAXIMUM_IMBALANCE){
@@ -106,12 +168,12 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
             }
         }
         else if(right == null){
-            if(left.height > MAXIMUM_IMBALANCE){
+            if(height(left) > MAXIMUM_IMBALANCE){
                 return leftImbalance();
             }
         }
         else{
-            if(right.height > MAXIMUM_IMBALANCE){
+            if(height(right) > MAXIMUM_IMBALANCE){
                 return rightImbalance();
             }
         }
@@ -122,23 +184,18 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         if (height(left.left) > height(left.right)){
             return rotateLeftToRight();
         }
-        else if(height(left.right) > height(left.left)){
+        else{
             return doubleLeftToRight();
         }
-        else{
-            throw new AssertionError();
-        }
+
     }
 
     private ALDATreeSetNode<E> rightImbalance(){
         if (height(right.right) > height(right.left)){
             return rotateRightToLeft();
         }
-        else if(height(right.left) > height(right.right)){
-            return doubleRightToLeft();
-        }
         else{
-            throw new AssertionError();
+            return doubleRightToLeft();
         }
     }
 
@@ -184,12 +241,12 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
     }
 
     private ALDATreeSetNode<E> doubleRightToLeft(){
-        right.rotateLeftToRight();
+        right = right.rotateLeftToRight();
         return rotateRightToLeft();
     }
 
     private ALDATreeSetNode<E> doubleLeftToRight(){
-        left.rotateRightToLeft();
+        left = left.rotateRightToLeft();
         return rotateLeftToRight();
     }
 
