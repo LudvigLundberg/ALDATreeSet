@@ -30,6 +30,14 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         return predecessor;
     }
 
+    void setPredecessor(ALDATreeSetNode<E> predecessor){
+        this.predecessor = predecessor;
+    }
+
+    void setSuccessor(ALDATreeSetNode<E> successor){
+        this.successor = successor;
+    }
+
     //Package Private
     E getData(){
         return data;
@@ -44,7 +52,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
 
         if (lessOrGreaterInt < 0) {
             if (left == null) {
-                left = new ALDATreeSetNode<E>(data,this,null);
+                left = new ALDATreeSetNode<E>(data,null,this);
                 predecessor = left;
                 size++;
                 height = Math.max(height(left), height(right)) + 1;
@@ -55,15 +63,15 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
                 if(left.size > tempsize){
                     size++;
                     height = Math.max(height(left), height(right)) + 1;
-                    this.predecessor = left.findMax();
+                    predecessor = left.findMax();
                 }
             }
         }
 
         else if(lessOrGreaterInt > 0) {
             if (right == null) {
+                right = new ALDATreeSetNode<E>(data, this, null);
                 successor = right;
-                right = new ALDATreeSetNode<E>(data, null, this);
                 size++;
                 height = Math.max(height(left), height(right)) + 1;
             }
@@ -73,7 +81,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
                 if(right.size > tempsize){
                     size++;
                     height = Math.max(height(left), height(right)) + 1;
-                    this.successor = right.findMin();
+                    successor = right.findMin();
                 }
 
             }
@@ -134,7 +142,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         }
     }
 
-    private ALDATreeSetNode<E> findMax(){
+    protected ALDATreeSetNode<E> findMax(){
         if(right != null){
             return right.findMax();
         }
@@ -143,7 +151,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
         }
     }
 
-    private ALDATreeSetNode<E> findMin() {
+    protected ALDATreeSetNode<E> findMin() {
         if(left != null){
             return left.findMin();
         }

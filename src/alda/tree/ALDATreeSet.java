@@ -10,11 +10,13 @@ import java.util.Iterator;
 
 public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> implements Iterable<E> {
     private ALDATreeSetNode<E> root;
+    private ALDATreeSetNode<E> first = new ALDATreeSetNode<E>(null, null, null);
+    private ALDATreeSetNode<E> last = new ALDATreeSetNode<E>(null,null,null);
     private int size = 0;
 
     @Override
     public Iterator<E> iterator() {
-        return new ALDATreeSetIterator<E>(root);
+        return new ALDATreeSetIterator<E>(first);
     }
 
     /**
@@ -33,6 +35,8 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
             int tempsize = root.size();
             root = root.add(data);
             size = root.size();
+            first.setSuccessor(root.findMin());
+            last.setPredecessor(root.findMax());
             return size > tempsize;
         }
     }
@@ -83,8 +87,8 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
     private class ALDATreeSetIterator<E extends Comparable<E>> implements Iterator<E> {
         private ALDATreeSetNode<E> current;
 
-        private ALDATreeSetIterator(ALDATreeSetNode<E> root){
-            this.current = root;
+        private ALDATreeSetIterator(ALDATreeSetNode<E> first){
+            this.current = first;
         }
 
         @Override

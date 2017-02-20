@@ -48,12 +48,38 @@ public class ALDATreeSetTest {
         tree.add(12);
         assertEquals(13, tree.size());
         assertEquals(4, tree.height());
+
+
     }
+
+    @Test
+    public void testIteration(){
+        int[] testArray = {1,2,3,4,5,6};
+        int current = 0;
+        for(int e : tree){
+            assertEquals(testArray[current++],e);
+        }
+    }
+
+    @Test
+    public void testIterationReverseOrder(){
+        tree = new ALDATreeSet<Integer>();
+        for (int i = 6; i > 0; i--){
+            tree.add(i);
+        }
+        int[] testArray = {1,2,3,4,5,6};
+        int current = 0;
+        for(int e : tree){
+            assertEquals(testArray[current++],e);
+        }
+    }
+
 
     @Test
     public void testToString() {
         assertEquals("[1, 2, 3, 4, 5, 6]", tree.toString());
     }
+
 
 
     @Test
