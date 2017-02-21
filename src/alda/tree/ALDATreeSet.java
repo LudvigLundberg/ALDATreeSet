@@ -14,6 +14,10 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
     private ALDATreeSetNode<E> last = new ALDATreeSetNode<E>(null,null,null);
     private int size = 0;
 
+    /**
+     *
+     * @return An iterator connected from the first element.
+     */
     @Override
     public Iterator<E> iterator() {
         return new ALDATreeSetIterator<E>(first);
@@ -46,6 +50,11 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
         }
     }
 
+    /**
+     *
+     * @param data The data to be removed
+     * @return True if the data has been removed from the TreeSet
+     */
 
     public boolean remove(E data) {
         int tempsize  = root.size();
@@ -71,7 +80,7 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
 
     /**
      *
-     * @param data The element to be added to the TreeSet
+     * @param data The element that will be compared to the elements in the list
      * @return True if the Set contains the element, false otherwise
      */
 
@@ -94,6 +103,10 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
         return size;
     }
 
+    /**
+     *
+     * @return the height of the root
+     */
     public int height(){
         return root == null ? -1 : root.height();
     }
@@ -111,6 +124,10 @@ public class ALDATreeSet<E extends Comparable<E>> extends AbstractSet<E> impleme
             return "[]";
         }
     }
+
+    /**
+     * Clears the tree from elements
+     */
 
     @Override
     public void clear(){

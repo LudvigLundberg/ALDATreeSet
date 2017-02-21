@@ -181,14 +181,14 @@ public class ALDATreeSetTest {
             assertEquals(oracle.size(), tree.size());
             assertEquals(oracle.toString(), tree.toString());
             Queue<Integer> queue = new LinkedList<Integer>();
-            /*
+
             for (Integer integer : tree) {
                 queue.add(integer);
             }
             int counter = 0;
-            for (Integer integer : oracle){
+            for (Integer integer : oracle) {
                 assertEquals(integer, queue.poll());
-            */
+            }
 
         }
     }

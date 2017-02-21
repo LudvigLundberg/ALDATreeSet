@@ -48,9 +48,9 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
     }
 
     protected ALDATreeSetNode<E> add(E data) {
-        int lessOrGreaterInt = data.compareTo(this.data);
+        int compareInt = data.compareTo(this.data);
 
-        if (lessOrGreaterInt < 0) {
+        if (compareInt < 0) {
             if (left == null) {
                 left = new ALDATreeSetNode<E>(data,null,this);
                 adjustPredecessorAndSuccessor(predecessor, left);
@@ -69,7 +69,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
             }
         }
 
-        else if(lessOrGreaterInt > 0) {
+        else if(compareInt > 0) {
             if (right == null) {
                 right = new ALDATreeSetNode<E>(data, this, null);
                 adjustPredecessorAndSuccessor(right, successor);
@@ -88,6 +88,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
 
             }
         }
+
         else{
             return this;
         }
@@ -98,27 +99,22 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
     protected ALDATreeSetNode<E> remove(E data){
         int compareInt = data.compareTo(this.data);
 
-        if (compareInt < 0){
-            if(left != null){
-                int tempsize = left.size;
-                left = left.remove(data);
-                if(left == null || left.size < tempsize ){
+        if(compareInt != 0){
+            ALDATreeSetNode choice = compareInt < 0 ? left : right;
+            if(choice != null){
+                int tempsize = choice.size;
+                if(compareInt < 0){
+                   left = left.remove(data);
+                }
+                else{
+                    right = right.remove(data);
+                }
+                choice = (compareInt < 0 ? left : right);
+                if(choice == null || choice.size < tempsize ){
                     size--;
                     height = Math.max(height(left), height(right)) + 1;
                 }
 
-            }
-            return balance();
-
-        }
-        else if(compareInt > 0){
-            if(right != null){
-                int tempsize = right.size;
-                right = right.remove(data);
-                if(right == null || right.size < tempsize ){
-                    size--;
-                    height = Math.max(height(left), height(right)) + 1;
-                }
             }
             return balance();
         }
@@ -144,6 +140,7 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
 
         }
     }
+
 
     private void adjustPredecessorAndSuccessor(ALDATreeSetNode<E> predecessor, ALDATreeSetNode<E> successor){
         if(predecessor != null) {
