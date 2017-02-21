@@ -125,21 +125,20 @@ public class ALDATreeSetNode<E extends Comparable<E>> {
 
         else{
             if(left != null){
-                ALDATreeSetNode<E> newRoot = left.findMax(); //Varför fungerar inte predecessor här?
-                newRoot.left = left.remove(newRoot.data);
-                newRoot.right = right;
-                adjustHeightAndSize(newRoot);
-                return newRoot.balance();
+                this.data = predecessor.data;
+                left = left.remove(predecessor.data);
+                adjustHeightAndSize(this);
+                return balance();
             }
             else if(right != null){
-                ALDATreeSetNode<E> newRoot = right.findMin(); //och Sucessor här!
-                newRoot.right = right.remove(newRoot.data);
-                newRoot.left = left;
-                adjustHeightAndSize(newRoot);
-                return newRoot.balance();
+                this.data = successor.data;
+                right =  right.remove(successor.data);
+                adjustHeightAndSize(this);
+                return balance();
 
             }
             else{
+                adjustPredecessorAndSuccessor(predecessor, successor);
                 return null;
             }
 
